@@ -37,12 +37,14 @@ export default function Contribute() {
 
 const styles = {
   main: {
-    minHeight: 'calc(100vh - 155px)', // 100vh trừ đi chiều cao của header và footer
+    minHeight: 'calc(100vh - 195px)', // 100vh trừ đi chiều cao của header và footer
     padding: '20px',
     backgroundColor: '#fff',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center', // Căn dọc ở giữa trang
+    paddingTop: '80px',
+    paddingBottom: '50px',
   },
   logoContainer: {
     textAlign: 'center',

@@ -20,9 +20,14 @@ const Footer = () => {
   
   const styles = {
     footer: {
+      position: 'fixed', // Cố định vị trí footer
+      bottom: 0,
+      left: 0,
+      right: 0,
       backgroundColor: '#E4E3E3',
-      padding: '5px 0', 
+      padding: '5px 0',
       textAlign: 'center',
+      zIndex: 1000, // Đảm bảo footer nằm trên cùng
     },
     contactTitle: {
       fontSize: '16px', 

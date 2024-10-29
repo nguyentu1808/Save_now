@@ -43,7 +43,7 @@ const Header = () => {
             </button>
           </li>
           <li style={styles.navItem}>
-            <button onClick={() => handleNavigate('/')} style={styles.navLink}>
+            <button onClick={() => handleNavigate('/request')} style={styles.navLink}>
               Yêu cầu tiếp tế
             </button>
           </li>
@@ -64,11 +64,16 @@ const Header = () => {
 
 const styles = {
   header: {
+    position: 'fixed', 
+    top: 0,
+    left: 0,
+    right: 0,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '15px 40px',
     backgroundColor: '#E4E3E3',
+    zIndex: 1000, 
   },
   logo: {
     flex: 1,

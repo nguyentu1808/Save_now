@@ -73,6 +73,8 @@ const styles = {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center', // Căn dọc ở giữa trang
+      paddingTop: '80px',
+      paddingBottom: '50px',
     },
     logoContainer: {
       textAlign: 'center',
