@@ -11,5 +11,6 @@
 
  Link design giao diện: https://www.figma.com/design/tRkWRiP4zGPhEny3psaIJH/T%C3%BA-nguyen's-team-library?node-id=0-1&t=ZvCniBVLVVm8xgzS-1
 
+Thiết kế đatabase:
  ![image](https://github.com/user-attachments/assets/57481360-e064-4d31-8c64-bbcccafc1d09)
 
