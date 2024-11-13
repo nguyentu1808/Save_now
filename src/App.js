@@ -20,6 +20,7 @@ import Home from "./app/home";
 import Contribute from "./app/contribute";
 import RescueRequestList from "./app/request"
 import InfoRequest from "./app/inforequest"
+import ItemPage from "./app/item"
 
 function App() {
   const [user, setUser] = useState();
@@ -44,6 +45,7 @@ function App() {
           <Route path="/contribute" element={<Contribute />} />
           <Route path="/request" element={<RescueRequestList/>} />
           <Route path="/inforequest" element={<InfoRequest/>} />
+          <Route path="/item" element={<ItemPage/>} />
         </Routes>
       </div>
     </Router>

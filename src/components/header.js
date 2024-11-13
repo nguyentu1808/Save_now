@@ -33,7 +33,7 @@ const Header = () => {
       <nav style={styles.nav}>
         <ul style={styles.navList}>
           <li style={styles.navItem}>
-            <button onClick={() => handleNavigate('/')} style={styles.navLink}>
+            <button onClick={() => handleNavigate('/item')} style={styles.navLink}>
               Vật Phẩm
             </button>
           </li>
