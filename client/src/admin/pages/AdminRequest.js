@@ -179,7 +179,7 @@ const AdminRescueRequestList = () => {
             ))}
         </div>
 
-        {activeTab === "approvals" && (
+        {activeTab === "requests" && (
           <button
             style={styles.createRequestButton}
             onClick={() => setIsAddRequestVisible(true)}
