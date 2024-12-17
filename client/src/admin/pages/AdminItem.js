@@ -55,7 +55,11 @@ export default function AdminItemPage() {
         },
       });
       const data = await response.json();
-      setWarehouses(data);
+      console.log(data);
+      // setWarehouses(data);
+      if (data.success != false) {
+        setWarehouses(data);
+      }
       if (data.length > 0) {
         setSelectedWarehouse({
           id: data[0].id,
@@ -86,11 +90,16 @@ export default function AdminItemPage() {
           },
         }
       );
+      
       const data = await response.json();
-      setItems(data);
+      // console.log(data);
+      if (data.success != false) {
+        setItems(data);
+      }
     } catch (error) {
       console.error("Error fetching items:", error);
     }
+    console.log(items)
   };
 
   // Thêm hoặc cập nhật vật phẩm
