@@ -56,7 +56,7 @@ router.post('/warehouses/employees', authenticateToken, addEmployee);
 router.delete('/deleteEmployee/:id', authenticateToken, deleteEmployee);
 
 // Sửa thông tin nhân viên
-router.put('/employee/:id', authenticateToken, updateEmployee); 
+router.put('/employee/:id', authenticateToken, updateEmployee);
 
 //Lấy thông tin vật phẩm theo kho
 router.get('/items/:warehouse_id', authenticateToken, getItemsByWarehouse);
@@ -68,7 +68,7 @@ router.post('/addItem', authenticateToken, addItem);
 router.delete('/deleteItem/:id', authenticateToken, deleteItem);
 
 // Sửa thông tin vật phẩm
-router.put('/item/:id', authenticateToken, updateItem); 
+router.put('/item/:id', authenticateToken, updateItem);
 
 //Sử dụng vật phẩm
 router.post('/useItem/:id', authenticateToken, useItem);

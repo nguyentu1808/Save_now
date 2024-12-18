@@ -32,5 +32,5 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
+  console.log(`http://fall2024c8g5.int3306.freeddns.org`);
 });

@@ -12,10 +12,13 @@ const register = async (req, res) => {
     if (existingUser.length > 0) {
       return res.status(409).json({ success: false, message: 'Email used' });
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10); // Mã hóa password
-    const data = await db.query('INSERT INTO users(user_name,password,email,role) VALUES (?,?,?,?)', [email, hashedPassword, email, 'staff']);
-    
+    const data = await db.query(
+      'INSERT INTO users(user_name,password,email,role) VALUES (?,?,?,?)',
+      [email, hashedPassword, email, 'staff']
+    );
+
     if (!data) {
       return res.status(404).send({ success: false, message: 'Error insert query' });
     }
@@ -38,8 +41,7 @@ const login = async (req, res) => {
       return res.status(404).send({ success: false, message: 'Email does not exist' });
     }
 
-
-     const user = data[0][0];
+    const user = data[0][0];
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
@@ -47,12 +49,12 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, role: user.role }, 'secretkey', { expiresIn: '1h' });
-    
+
     res.status(200).send({
       success: true,
       message: 'Login successfully',
       token,
-      role: user.role, 
+      role: user.role,
     });
   } catch (error) {
     console.log(error);

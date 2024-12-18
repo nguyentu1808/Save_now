@@ -9,22 +9,21 @@ const {
   getRequestByLocation,
 } = require('../controllers/staffController');
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) {
-      return res.status(401).send({ success: false, message: 'No token provided' });
+  const token = req.headers['authorization'];
+  if (!token) {
+    return res.status(401).send({ success: false, message: 'No token provided' });
+  }
+
+  jwt.verify(token.split(' ')[1], 'secretkey', (err, user) => {
+    if (err) {
+      return res.status(403).send({ success: false, message: 'Invalid token' });
     }
-  
-    jwt.verify(token.split(" ")[1], 'secretkey', (err, user) => {
-      if (err) {
-        return res.status(403).send({ success: false, message: 'Invalid token' });
-      }
-      req.user = user; // Lưu thông tin người dùng từ token
-      next();
-    });
-  };
+    req.user = user; // Lưu thông tin người dùng từ token
+    next();
+  });
+};
 
 const router = express.Router();
-
 
 //Lấy thông tin vật phẩm theo kho
 router.get('/items', authenticateToken, getItems);
@@ -36,7 +35,7 @@ router.post('/addItem', authenticateToken, addItem);
 router.delete('/deleteItem/:id', authenticateToken, deleteItem);
 
 // Sửa thông tin vật phẩm
-router.put('/item/:id', authenticateToken, updateItem); 
+router.put('/item/:id', authenticateToken, updateItem);
 
 //Sử dụng vật phẩm
 router.post('/useItem/:id', authenticateToken, useItem);

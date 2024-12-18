@@ -1,0 +1,16 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "tabWidth": 4,
+  "useTabs": false,
+  "arrowParens": "avoid",
+  "overrides": [
+    {
+      "files": ["*.js", "*.json", "*.jsx", ".prettierrc"],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ],
+  "printWidth": 100
+}

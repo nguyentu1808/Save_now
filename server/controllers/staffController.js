@@ -1,19 +1,15 @@
-const bcrypt = require("bcrypt");
-const db = require("../config/db");
-const { post } = require("../routes/authRoutes");
+const bcrypt = require('bcrypt');
+const db = require('../config/db');
+const { post } = require('../routes/authRoutes');
+const { addLogAction } = require('./logsController');
 
 //Lấy danh sách vật phẩm theo kho
 const getItems = async (req, res) => {
   const userId = req.user.id;
-  const [userData] = await db.query(
-    "SELECT warehouse_id FROM users WHERE id = ?",
-    [userId]
-  );
+  const [userData] = await db.query('SELECT warehouse_id FROM users WHERE id = ?', [userId]);
 
   if (userData.length === 0) {
-    return res
-      .status(403)
-      .send({ success: false, message: "Employee not in any warehouse" });
+    return res.status(403).send({ success: false, message: 'Employee not in any warehouse' });
   }
 
   const warehouseId = userData[0].warehouse_id;
@@ -27,7 +23,7 @@ const getItems = async (req, res) => {
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Error fetching items" });
+    res.status(500).json({ success: false, message: 'Error fetching items' });
   }
 };
 
@@ -40,78 +36,52 @@ const updateItem = async (req, res) => {
     if (!name && !quantity && !unit && !expiration_date && !category) {
       return res.status(400).send({
         success: false,
-        message: "At least one field must be updated",
+        message: 'At least one field must be updated',
       });
     }
 
-    const [itemData] = await db.query(
-      "SELECT id FROM items WHERE id = ?",
-      itemId
-    );
+    const [itemData] = await db.query('SELECT id FROM items WHERE id = ?', itemId);
 
     if (itemData.length === 0) {
       return res.status(404).send({
         success: false,
-        message: "Item not found in your warehouse",
+        message: 'Item not found in your warehouse',
       });
     }
 
     await db.query(
-      "UPDATE items SET name = COALESCE(?, name), quantity = COALESCE(?, quantity), unit = COALESCE(?, unit), expiration_date = COALESCE(?, expiration_date), category = COALESCE(?, category) WHERE id = ?",
+      'UPDATE items SET name = COALESCE(?, name), quantity = COALESCE(?, quantity), unit = COALESCE(?, unit), expiration_date = COALESCE(?, expiration_date), category = COALESCE(?, category) WHERE id = ?',
       [name, quantity, unit, expiration_date, category, itemId]
     );
 
-    res
-      .status(200)
-      .send({ success: true, message: "Item updated successfully" });
-    await fetch("http://localhost:5001/adLogs//activity-logs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: req.user.id,
-        action: 'update',
-        table_name: 'items',
-        record_id: itemId,
-      })
-    });
+    const logData = {
+      user_id: req.user.id,
+      action: 'update',
+      table_name: 'items',
+      record_id: itemId,
+    };
+    await addLogAction(logData);
+
+    res.status(200).send({ success: true, message: 'Item updated successfully' });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .send({ success: false, message: "Error updating item", error });
+    res.status(500).send({ success: false, message: 'Error updating item', error });
   }
 };
 
 //Thêm vật phẩm
 const addItem = async (req, res) => {
-  const { name, quantity, unit, expiration_date, category, contributor_name } =
-    req.body;
+  const { name, quantity, unit, expiration_date, category, contributor_name } = req.body;
   const userId = req.user.id;
-  const [userData] = await db.query(
-    "SELECT warehouse_id FROM users WHERE id = ?",
-    [userId]
-  );
+  const [userData] = await db.query('SELECT warehouse_id FROM users WHERE id = ?', [userId]);
 
   if (userData.length === 0) {
-    return res
-      .status(403)
-      .send({ success: false, message: "Employee not in any warehouse" });
+    return res.status(403).send({ success: false, message: 'Employee not in any warehouse' });
   }
 
   const warehouse_id = userData[0].warehouse_id;
-  if (
-    !name ||
-    !quantity ||
-    !unit ||
-    !category ||
-    !warehouse_id ||
-    !contributor_name
-  ) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Missing required fields" });
+  if (!name || !quantity || !unit || !category || !warehouse_id || !contributor_name) {
+    return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
   try {
@@ -128,22 +98,19 @@ const addItem = async (req, res) => {
       warehouse_id,
       contributor_name,
     ]);
-    res.status(201).json({ success: true, message: "Item added successfully" });
-    await fetch("http://localhost:5001/adLogs//activity-logs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: req.user.id,
-        action: 'insert',
-        table_name: 'items',
-        record_id: result.insertId,
-      })
-    });
+
+    const data = {
+      user_id: req.user.id,
+      action: 'insert',
+      table_name: 'items',
+      record_id: result.insertId,
+    };
+    await addLogAction(data);
+
+    res.status(201).json({ success: true, message: 'Item added successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Error adding item" });
+    res.status(500).json({ success: false, message: 'Error adding item' });
   }
 };
 
@@ -151,26 +118,21 @@ const addItem = async (req, res) => {
 const deleteItem = async (req, res) => {
   const { id } = req.params;
   try {
-    const query = "DELETE FROM items WHERE id = ?";
+    const query = 'DELETE FROM items WHERE id = ?';
     await db.execute(query, [id]);
-    res
-      .status(200)
-      .json({ success: true, message: "Item deleted successfully" });
-    await fetch("http://localhost:5001/adLogs//activity-logs", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: req.user.id,
-        action: 'delete',
-        table_name: 'items',
-        record_id: id,
-      })
-    });
+
+    const logData = {
+      user_id: req.user.id,
+      action: 'delete',
+      table_name: 'items',
+      record_id: id,
+    };
+    await addLogAction(logData);
+
+    res.status(200).json({ success: true, message: 'Item deleted successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Error deleting item" });
+    res.status(500).json({ success: false, message: 'Error deleting item' });
   }
 };
 
@@ -180,48 +142,41 @@ const useItem = async (req, res) => {
   const { areaId, quantity } = req.body;
   const userId = req.user.id;
 
-  const [itemData] = await db.query("SELECT * FROM items WHERE id = ?", itemId);
+  const [itemData] = await db.query('SELECT * FROM items WHERE id = ?', itemId);
 
   if (!itemData) {
     return res.status(404).send({
       success: false,
-      message: "Item not found in your warehouse",
+      message: 'Item not found in your warehouse',
     });
   }
 
   if (itemData[0].is_used) {
-    return res.status(400).json({ message: "Sản phẩm này đã được sử dụng." });
+    return res.status(400).json({ message: 'Sản phẩm này đã được sử dụng.' });
   }
 
   if (quantity === itemData[0].quantity) {
     try {
       await db.query(
-        "UPDATE items SET area_id = COALESCE(?, area_id), user_id = COALESCE(?, user_id), is_used = 1 WHERE id = ?",
+        'UPDATE items SET area_id = COALESCE(?, area_id), user_id = COALESCE(?, user_id), is_used = 1 WHERE id = ?',
         [areaId, userId, itemId]
       );
 
-      res
-        .status(200)
-        .send({ success: true, message: "Item updated successfully" });
+      res.status(200).send({ success: true, message: 'Item updated successfully' });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .send({ success: false, message: "Error updating item", error });
+      res.status(500).send({ success: false, message: 'Error updating item', error });
     }
   } else if (quantity < itemData[0].quantity) {
     try {
       // Cập nhật số lượng còn lại cho sản phẩm hiện tại
       const remainingQuantity = itemData[0].quantity - quantity;
 
-      await db.query("UPDATE items SET quantity = ? WHERE id = ?", [
-        remainingQuantity,
-        itemId,
-      ]);
+      await db.query('UPDATE items SET quantity = ? WHERE id = ?', [remainingQuantity, itemId]);
 
       // Tạo sản phẩm mới với số lượng sử dụng và is_used = true
       await db.query(
-        "INSERT INTO items (name, quantity, unit, expiration_date, warehouse_id, area_id, contributor_name, category, user_id, is_used) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        'INSERT INTO items (name, quantity, unit, expiration_date, warehouse_id, area_id, contributor_name, category, user_id, is_used) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           itemData[0].name, // Tên sản phẩm từ itemData
           quantity, // Số lượng sử dụng
@@ -236,27 +191,23 @@ const useItem = async (req, res) => {
         ]
       );
 
+      const logData = {
+        user_id: req.user.id,
+        action: 'update',
+        table_name: 'items',
+        record_id: itemId,
+      };
+      await addLogAction(logData);
+
       res.status(200).send({
         success: true,
-        message: "Item partially used and split successfully",
-      });
-      await fetch("http://localhost:5001/adLogs//activity-logs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: req.user.id,
-          action: 'update',
-          table_name: 'items',
-          record_id: itemId,
-        })
+        message: 'Item partially used and split successfully',
       });
     } catch (error) {
       console.error(error);
       res.status(500).send({
         success: false,
-        message: "Error updating item and creating new record",
+        message: 'Error updating item and creating new record',
         error,
       });
     }
@@ -265,7 +216,7 @@ const useItem = async (req, res) => {
     console.log(quantity);
     res.status(400).send({
       success: false,
-      message: "Invalid quantity: exceeds available stock",
+      message: 'Invalid quantity: exceeds available stock',
     });
   }
 };
@@ -283,7 +234,7 @@ async function getRequestByLocation(req, res) {
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Error fetching request" });
+    res.status(500).json({ success: false, message: 'Error fetching request' });
   }
 }
 
