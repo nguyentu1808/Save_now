@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import EditUserModal from "./AdminEditStaff";
 import AddUserModal from "./AdminAddStaff";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function AdminListStaff() {
   const [users, setUsers] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
@@ -29,7 +31,7 @@ export default function AdminListStaff() {
   // Hàm lấy danh sách kho
   const fetchWarehouses = async () => {
     try {
-      const response = await fetch("http://localhost:5001/admin/warehouses", {
+      const response = await fetch(`${apiUrl}/admin/warehouses`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -53,7 +55,7 @@ export default function AdminListStaff() {
   //Hàm lấy danh sách users theo warehouse_id
   const fetchUsers = async (warehouseId) => {
     try {
-      const response = await fetch(`http://localhost:5001/admin/warehouses/${warehouseId}/employees`, {
+      const response = await fetch(`${apiUrl}/admin/warehouses/${warehouseId}/employees`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -90,7 +92,7 @@ export default function AdminListStaff() {
     }
   
     try {
-      const response = await fetch(`http://localhost:5001/admin/deleteEmployee/${id}`, {
+      const response = await fetch(`${apiUrl}/admin/deleteEmployee/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

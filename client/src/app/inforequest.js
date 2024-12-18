@@ -3,6 +3,8 @@ import Footer from "../components/footer";
 import Header from "../components/header";
 import { useParams } from "react-router-dom";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const InfoRequest = () => {
   const [selectedTab, setSelectedTab] = useState("relatedArticles");
   const [data, setData] = useState({
@@ -20,7 +22,7 @@ const InfoRequest = () => {
     const fetchItems = async (requestId) => {
         try {
           const response = await fetch(
-            `http://localhost:5001/adRequest/items/request/${requestId}`,
+            `${apiUrl}/adRequest/items/request/${requestId}`,
             {
               method: "GET",
               headers: {

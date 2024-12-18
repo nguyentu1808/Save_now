@@ -1,22 +1,24 @@
-import { useState, useEffect } from "react";
-import AddItemModal from "./AdminHandleItem";
-import UsingItem from "./AdminUsingItem";
-import Layout from "../layout";
+import { useState, useEffect } from 'react';
+import AddItemModal from './AdminHandleItem';
+import UsingItem from './AdminUsingItem';
+import Layout from '../layout';
 
 // Các danh mục
 const categories = [
-  "Lương thực",
-  "Đồ dùng sinh hoạt",
-  "Dụng cụ y tế, vệ sinh",
-  "Các đồ dùng khác",
-  "Đồ dùng hỗ trợ đặc biệt",
-  "Đã gửi",
-  "Đã hết hạn",
-  "Tất cả",
+  'Lương thực',
+  'Đồ dùng sinh hoạt',
+  'Dụng cụ y tế, vệ sinh',
+  'Các đồ dùng khác',
+  'Đồ dùng hỗ trợ đặc biệt',
+  'Đã gửi',
+  'Đã hết hạn',
+  'Tất cả',
 ];
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function AdminItemPage() {
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
   const [warehouses, setWarehouses] = useState([]);
   const [items, setItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +26,7 @@ export default function AdminItemPage() {
   const [showUsingModal, setShowUsingModal] = useState(false);
   const [selectedWarehouse, setSelectedWarehouse] = useState({
     id: 1,
-    name: "Kho Miền Bắc",
+    name: 'Kho Miền Bắc',
   });
 
   // Lấy danh sách kho khi component mount
@@ -34,24 +36,23 @@ export default function AdminItemPage() {
 
   //Lấy danh sách items khi selectedWarehouse thay đổi
   useEffect(() => {
-    if (selectedWarehouse.id && selectedWarehouse.id !== "") {
+    if (selectedWarehouse.id && selectedWarehouse.id !== '') {
       fetchItems(selectedWarehouse.id);
     }
   }, [selectedWarehouse]);
 
   useEffect(() => {
-      fetchItems(selectedWarehouse.id)
+    fetchItems(selectedWarehouse.id);
   }, [selectedCategory]);
-
 
   // Hàm lấy danh sách kho
   const fetchWarehouses = async () => {
     try {
-      const response = await fetch("http://localhost:5001/admin/warehouses", {
-        method: "GET",
+      const response = await fetch(`${apiUrl}/admin/warehouses`, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
       });
       const data = await response.json();
@@ -67,89 +68,80 @@ export default function AdminItemPage() {
         });
       }
     } catch (error) {
-      console.error("Error fetching warehouses:", error);
+      console.error('Error fetching warehouses:', error);
     }
   };
 
-  const handleWarehouseChange = (e) => {
+  const handleWarehouseChange = e => {
     const selectedId = parseInt(e.target.value, 10); // Chuyển giá trị thành số
-    const warehouse = warehouses.find((w) => w.id === selectedId); // Tìm object kho
+    const warehouse = warehouses.find(w => w.id === selectedId); // Tìm object kho
     setSelectedWarehouse(warehouse); // Cập nhật object kho
   };
 
   //Hàm lấy danh sách item theo warehouse_id
-  const fetchItems = async (warehouseId) => {
+  const fetchItems = async warehouseId => {
     try {
-      const response = await fetch(
-        `http://localhost:5001/admin/items/${warehouseId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      
+      const response = await fetch(`${apiUrl}/admin/items/${warehouseId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
       const data = await response.json();
       // console.log(data);
       if (data.success != false) {
         setItems(data);
       }
     } catch (error) {
-      console.error("Error fetching items:", error);
+      console.error('Error fetching items:', error);
     }
-    console.log(items)
+    console.log(items);
   };
 
   // Thêm hoặc cập nhật vật phẩm
-  const handleSave = (item) => {
+  const handleSave = item => {
     if (item.id) {
       // Sửa vật phẩm
-      setItems((prev) => prev.map((i) => (i.id === item.id ? item : i)));
+      setItems(prev => prev.map(i => (i.id === item.id ? item : i)));
     } else {
       // Thêm vật phẩm mới
-      setItems((prev) => [
-        ...prev,
-        { ...item, id: Math.max(...prev.map((i) => i.id), 0) + 1 },
-      ]);
+      setItems(prev => [...prev, { ...item, id: Math.max(...prev.map(i => i.id), 0) + 1 }]);
     }
   };
 
   // Xóa vật phẩm
-  const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa vật phẩm này không?")) {
+  const handleDelete = async id => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa vật phẩm này không?')) {
       return; // Người dùng hủy hành động xóa
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:5001/admin/deleteItem/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/admin/deleteItem/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!response.ok) {
-        throw new Error("Không thể xóa vật phẩm");
+        throw new Error('Không thể xóa vật phẩm');
       }
 
       const data = await response.json();
 
       // Xóa nhân viên khỏi danh sách hiển thị nếu xóa thành công
       if (data.success) {
-        setItems((prev) => prev.filter((item) => item.id !== id));
-        alert(data.message || "Vật phẩm đã được xóa thành công");
+        setItems(prev => prev.filter(item => item.id !== id));
+        alert(data.message || 'Vật phẩm đã được xóa thành công');
       } else {
-        alert(data.message || "Có lỗi xảy ra khi xóa vật phẩm");
+        alert(data.message || 'Có lỗi xảy ra khi xóa vật phẩm');
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
-      alert("Có lỗi xảy ra khi xóa vật phẩm");
+      console.error('Error deleting item:', error);
+      alert('Có lỗi xảy ra khi xóa vật phẩm');
     }
   };
 
@@ -162,10 +154,10 @@ export default function AdminItemPage() {
           </div>
           <select
             style={styles.dropdown}
-            value={selectedWarehouse.id || ""}
+            value={selectedWarehouse.id || ''}
             onChange={handleWarehouseChange}
           >
-            {warehouses.map((warehouse) => (
+            {warehouses.map(warehouse => (
               <option key={warehouse.id} value={warehouse.id}>
                 {warehouse.name}
               </option>
@@ -177,7 +169,7 @@ export default function AdminItemPage() {
                 key={index}
                 style={{
                   ...styles.categoryItem,
-                  fontWeight: category === selectedCategory ? "bold" : "normal",
+                  fontWeight: category === selectedCategory ? 'bold' : 'normal',
                 }}
                 onClick={() => setSelectedCategory(category)}
               >
@@ -198,81 +190,70 @@ export default function AdminItemPage() {
                   <th style={styles.tableHeader}>Đơn vị</th>
                   <th style={styles.tableHeader}>Hạn sử dụng</th>
                   <th style={styles.tableHeader}>Danh mục</th>
-                  {selectedCategory !== "Đã gửi" &&
-                    selectedCategory !== "Đã hết hạn" && (
-                      <th style={styles.tableHeader}>Hành động</th>
-                    )}
+                  {selectedCategory !== 'Đã gửi' && selectedCategory !== 'Đã hết hạn' && (
+                    <th style={styles.tableHeader}>Hành động</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
                 {items
-                  .filter((item) => {
+                  .filter(item => {
                     const today = new Date(); // Lấy ngày hiện tại
 
                     // Điều kiện lọc
-                    if (selectedCategory === "Tất cả") {
+                    if (selectedCategory === 'Tất cả') {
                       // Hiển thị tất cả các mục chưa hết hạn và chưa sử dụng
                       return (
                         item.is_used === 0 &&
-                        (!item.expiration_date ||
-                          new Date(item.expiration_date) >= today)
+                        (!item.expiration_date || new Date(item.expiration_date) >= today)
                       );
-                    } else if (selectedCategory === "Đã hết hạn") {
+                    } else if (selectedCategory === 'Đã hết hạn') {
                       // Kiểm tra ngày hết hạn
-                      return (
-                        item.expiration_date &&
-                        new Date(item.expiration_date) < today
-                      );
-                    } else if (selectedCategory === "Đã gửi") {
+                      return item.expiration_date && new Date(item.expiration_date) < today;
+                    } else if (selectedCategory === 'Đã gửi') {
                       return item.is_used === 1;
                     } else {
                       // Lọc theo danh mục
                       return item.category === selectedCategory;
                     }
                   })
-                  .map((item) => (
+                  .map(item => (
                     <tr key={item.id} style={styles.tableRow}>
                       <td style={styles.tableCell}>{item.name}</td>
                       <td style={styles.tableCell}>{item.quantity}</td>
                       <td style={styles.tableCell}>{item.unit}</td>
                       <td style={styles.tableCell}>
                         {item.expiration_date
-                          ? new Date(item.expiration_date).toLocaleDateString(
-                              "vi-VN"
-                            )
-                          : "N/A"}
+                          ? new Date(item.expiration_date).toLocaleDateString('vi-VN')
+                          : 'N/A'}
                       </td>
 
                       <td style={styles.tableCell}>{item.category}</td>
-                      {selectedCategory !== "Đã gửi" &&
-                        selectedCategory !== "Đã hết hạn" && (
-                          <td style={styles.tableCell1}>
-                            <button
-                              style={styles.editButton}
-                              onClick={() => {
-                                setEditingItem(item);
-                                setShowModal(true);
-                              }}
-                            >
-                              Sửa
-                            </button>
-                            <button
-                              style={styles.deleteButton}
-                              onClick={() => handleDelete(item.id)}
-                            >
-                              Xóa
-                            </button>
-                            <button
-                              style={styles.useButton}
-                              onClick={() => {
-                                setShowUsingModal(true);
-                                setEditingItem(item);
-                              }}
-                            >
-                              Sử dụng
-                            </button>
-                          </td>
-                        )}
+                      {selectedCategory !== 'Đã gửi' && selectedCategory !== 'Đã hết hạn' && (
+                        <td style={styles.tableCell1}>
+                          <button
+                            style={styles.editButton}
+                            onClick={() => {
+                              setEditingItem(item);
+                              setShowModal(true);
+                            }}
+                          >
+                            Sửa
+                          </button>
+                          <button style={styles.deleteButton} onClick={() => handleDelete(item.id)}>
+                            Xóa
+                          </button>
+                          <button
+                            style={styles.useButton}
+                            onClick={() => {
+                              setShowUsingModal(true);
+                              setEditingItem(item);
+                            }}
+                          >
+                            Sử dụng
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
               </tbody>
@@ -311,122 +292,122 @@ export default function AdminItemPage() {
 
 const styles = {
   main: {
-    display: "flex",
-    paddingTop: "60px",
-    paddingBottom: "30px",
+    display: 'flex',
+    paddingTop: '60px',
+    paddingBottom: '30px',
   },
   sidebar: {
-    width: "200px",
-    minHeight: "calc(100vh - 150px)",
-    backgroundColor: "#f2f2f2",
-    padding: "20px",
-    borderRight: "1px solid #ddd",
+    width: '200px',
+    minHeight: 'calc(100vh - 150px)',
+    backgroundColor: '#f2f2f2',
+    padding: '20px',
+    borderRight: '1px solid #ddd',
   },
   categoryHeader: {
-    fontWeight: "bold",
-    marginBottom: "20px",
+    fontWeight: 'bold',
+    marginBottom: '20px',
   },
   dropdown: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "30px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
+    width: '100%',
+    padding: '10px',
+    marginBottom: '30px',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
   },
   categoryList: {
-    listStyleType: "none",
+    listStyleType: 'none',
     padding: 0,
   },
   categoryItem: {
-    cursor: "pointer",
-    padding: "8px 0",
-    color: "#333",
+    cursor: 'pointer',
+    padding: '8px 0',
+    color: '#333',
   },
   content: {
     flex: 1,
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: "20px",
+    fontSize: '24px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: '20px',
   },
   tableContainer: {
-    width: "1000px",
-    height: "500px",
-    overflowY: "auto",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
+    width: '1000px',
+    height: '500px',
+    overflowY: 'auto',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
   },
   table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    tableLayout: "fixed",
+    width: '100%',
+    borderCollapse: 'collapse',
+    tableLayout: 'fixed',
   },
   tableHeader: {
-    padding: "10px",
-    backgroundColor: "#c2c2c2",
-    fontWeight: "bold",
-    border: "1px solid #ddd",
-    textAlign: "left",
-    position: "sticky",
+    padding: '10px',
+    backgroundColor: '#c2c2c2',
+    fontWeight: 'bold',
+    border: '1px solid #ddd',
+    textAlign: 'left',
+    position: 'sticky',
     top: 0,
     zIndex: 1,
   },
   tableRow: {
-    borderBottom: "1px solid #ddd",
+    borderBottom: '1px solid #ddd',
   },
   tableCell: {
-    padding: "10px",
-    borderLeft: "1px solid #ddd",
-    textAlign: "left",
+    padding: '10px',
+    borderLeft: '1px solid #ddd',
+    textAlign: 'left',
   },
   tableCell1: {
-    padding: "10px",
-    borderLeft: "1px solid #ddd",
-    textAlign: "center",
+    padding: '10px',
+    borderLeft: '1px solid #ddd',
+    textAlign: 'center',
     // lineHeight: "20px",
   },
   addButton: {
-    position: "fixed",
-    bottom: "150px",
-    right: "100px",
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    position: 'fixed',
+    bottom: '150px',
+    right: '100px',
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
   editButton: {
-    marginRight: "10px",
-    padding: "5px 10px",
-    backgroundColor: "#95c8ef",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
+    marginRight: '10px',
+    padding: '5px 10px',
+    backgroundColor: '#95c8ef',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
   },
   deleteButton: {
-    padding: "5px 10px",
-    backgroundColor: "#95c8ef",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
+    padding: '5px 10px',
+    backgroundColor: '#95c8ef',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
   },
   useButton: {
-    padding: "5px 10px",
-    marginTop: "5px",
-    backgroundColor: "#95c8ef",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
+    padding: '5px 10px',
+    marginTop: '5px',
+    backgroundColor: '#95c8ef',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
   },
 };

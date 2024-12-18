@@ -1,7 +1,9 @@
-import Layout from "../layout";
-import { useState, useEffect } from "react";
-import EditWarehouseModal from "../../components/edit_warehouse";
-import AddWarehouseModal from "../../components/add_warehouse";
+import Layout from '../layout';
+import { useState, useEffect } from 'react';
+import EditWarehouseModal from '../../components/edit_warehouse';
+import AddWarehouseModal from '../../components/add_warehouse';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function AdminWarehouse() {
   const [warehouses, setWarehouses] = useState([]);
@@ -18,15 +20,15 @@ export default function AdminWarehouse() {
     const fetchWarehouses = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:5001/admin/warehouses", {
-          method: "GET",
+        const response = await fetch(`${apiUrl}/admin/warehouses`, {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
           },
         });
         if (!response.ok) {
-          throw new Error("Failed to fetch warehouses");
+          throw new Error('Failed to fetch warehouses');
         }
         const data = await response.json();
         setWarehouses(data);
@@ -46,48 +48,43 @@ export default function AdminWarehouse() {
 
   const totalPages = Math.ceil(warehouses.length / itemsPerPage);
 
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = pageNumber => {
     setCurrentPage(pageNumber);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     try {
-      const response = await fetch(
-        `http://localhost:5001/admin/deleteWarehouse/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/admin/deleteWarehouse/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       if (response.ok) {
-        setWarehouses((prevWarehouses) =>
-          prevWarehouses.filter((warehouse) => warehouse.id !== id)
-        );
+        setWarehouses(prevWarehouses => prevWarehouses.filter(warehouse => warehouse.id !== id));
       } else {
-        throw new Error("Failed to delete warehouse");
+        throw new Error('Failed to delete warehouse');
       }
     } catch (err) {
       alert(err.message);
     }
   };
 
-  const handleEdit = (warehouse) => {
+  const handleEdit = warehouse => {
     setEditWarehouse(warehouse);
   };
 
-  const handleSaveWarehouse = (updatedWarehouse) => {
-    setWarehouses((prevWarehouses) =>
-      prevWarehouses.map((warehouse) =>
+  const handleSaveWarehouse = updatedWarehouse => {
+    setWarehouses(prevWarehouses =>
+      prevWarehouses.map(warehouse =>
         warehouse.id === updatedWarehouse.id ? updatedWarehouse : warehouse
       )
     );
     setEditWarehouse(null);
   };
 
-  const handleAddWarehouse = (newWarehouse) => {
-    setWarehouses((prevWarehouses) => [...prevWarehouses, newWarehouse]);
+  const handleAddWarehouse = newWarehouse => {
+    setWarehouses(prevWarehouses => [...prevWarehouses, newWarehouse]);
     setShowAddModal(false);
   };
 
@@ -115,16 +112,13 @@ export default function AdminWarehouse() {
                 </tr>
               </thead>
               <tbody>
-                {currentWarehouses.map((warehouse) => (
+                {currentWarehouses.map(warehouse => (
                   <tr key={warehouse.id} style={styles.tableRow}>
                     <td style={styles.tableCell}>{warehouse.name}</td>
                     <td style={styles.tableCell}>{warehouse.location}</td>
                     <td style={styles.tableCell}>{warehouse.capacity}</td>
                     <td style={styles.tableCell}>
-                      <button
-                        style={styles.editButton}
-                        onClick={() => handleEdit(warehouse)}
-                      >
+                      <button style={styles.editButton} onClick={() => handleEdit(warehouse)}>
                         Sửa
                       </button>
                       <button
@@ -146,9 +140,8 @@ export default function AdminWarehouse() {
                 key={index}
                 style={{
                   ...styles.pageButton,
-                  backgroundColor:
-                    currentPage === index + 1 ? "#007bff" : "#f1f1f1",
-                  color: currentPage === index + 1 ? "white" : "black",
+                  backgroundColor: currentPage === index + 1 ? '#007bff' : '#f1f1f1',
+                  color: currentPage === index + 1 ? 'white' : 'black',
                 }}
                 onClick={() => handlePageChange(index + 1)}
               >
@@ -156,10 +149,7 @@ export default function AdminWarehouse() {
               </button>
             ))}
           </div>
-          <button
-            style={styles.addButton}
-            onClick={() => setShowAddModal(true)}
-          >
+          <button style={styles.addButton} onClick={() => setShowAddModal(true)}>
             Thêm kho
           </button>
         </section>
@@ -172,10 +162,7 @@ export default function AdminWarehouse() {
           />
         )}
         {showAddModal && (
-          <AddWarehouseModal
-            onClose={() => setShowAddModal(false)}
-            onAdd={handleAddWarehouse}
-          />
+          <AddWarehouseModal onClose={() => setShowAddModal(false)} onAdd={handleAddWarehouse} />
         )}
       </main>
     </Layout>
@@ -184,88 +171,88 @@ export default function AdminWarehouse() {
 
 const styles = {
   main: {
-    display: "flex",
-    flexDirection: "column",
-    paddingTop: "60px",
-    paddingBottom: "30px",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: '60px',
+    paddingBottom: '30px',
+    alignItems: 'center',
   },
   content: {
-    width: "80%",
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    width: '80%',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   title: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: "30px",
-    marginTop: "20px",
+    fontSize: '24px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: '30px',
+    marginTop: '20px',
   },
   tableContainer: {
-    width: "100%",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    height: "calc(8 * 40px + 160px)",
-    overflow: "hidden",
+    width: '100%',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+    height: 'calc(8 * 40px + 160px)',
+    overflow: 'hidden',
   },
   table: {
-    width: "100%",
-    borderCollapse: "collapse",
+    width: '100%',
+    borderCollapse: 'collapse',
   },
   tableHeader: {
-    padding: "10px",
-    backgroundColor: "#c2c2c2",
-    fontWeight: "bold",
-    borderBottom: "1px solid #ddd",
-    textAlign: "left",
+    padding: '10px',
+    backgroundColor: '#c2c2c2',
+    fontWeight: 'bold',
+    borderBottom: '1px solid #ddd',
+    textAlign: 'left',
   },
   tableRow: {
-    borderBottom: "1px solid #ddd",
+    borderBottom: '1px solid #ddd',
   },
   tableCell: {
-    padding: "10px",
-    textAlign: "left",
+    padding: '10px',
+    textAlign: 'left',
   },
   editButton: {
-    padding: "5px 10px",
-    backgroundColor: "#95c8ef",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    marginRight: "5px",
+    padding: '5px 10px',
+    backgroundColor: '#95c8ef',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    marginRight: '5px',
   },
   deleteButton: {
-    padding: "5px 10px",
-    backgroundColor: "#f08080",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
+    padding: '5px 10px',
+    backgroundColor: '#f08080',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
   },
   addButton: {
-    position: "fixed",
-    bottom: "150px",
-    right: "100px",
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    position: 'fixed',
+    bottom: '150px',
+    right: '100px',
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
 
   pagination: {
-    marginTop: "20px",
-    display: "flex",
-    gap: "5px",
+    marginTop: '20px',
+    display: 'flex',
+    gap: '5px',
   },
   pageButton: {
-    padding: "5px 10px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    cursor: "pointer",
+    padding: '5px 10px',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+    cursor: 'pointer',
   },
 };

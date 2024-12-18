@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function AddUserModal({ onClose, onAdd }) {
   const [newUser, setNewUser] = useState({
-    user_name: "",
-    email: "",
-    password: "",
-    full_name: "",
+    user_name: '',
+    email: '',
+    password: '',
+    full_name: '',
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setNewUser({ ...newUser, [name]: value });
   };
@@ -22,7 +24,7 @@ export default function AddUserModal({ onClose, onAdd }) {
     }
 
     try {
-      const response = await fetch('http://localhost:5001/adminW/addEmployee', {
+      const response = await fetch(`${apiUrl}/adminW/addEmployee`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming you're using JWT token for authentication
@@ -105,72 +107,72 @@ export default function AddUserModal({ onClose, onAdd }) {
 
 const styles = {
   modal: {
-    position: "fixed",
+    position: 'fixed',
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 1000,
   },
   modalContent: {
-    width: "400px",
-    backgroundColor: "#fff",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
+    width: '400px',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '15px',
   },
   title: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "10px",
-    textAlign: "center",
-    color: "#333",
+    fontSize: '20px',
+    fontWeight: 'bold',
+    marginBottom: '10px',
+    textAlign: 'center',
+    color: '#333',
   },
   label: {
-    fontSize: "14px",
-    fontWeight: "500",
-    marginBottom: "5px",
-    color: "#555",
+    fontSize: '14px',
+    fontWeight: '500',
+    marginBottom: '5px',
+    color: '#555',
   },
   input: {
-    width: "100%",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "5px",
-    fontSize: "14px",
-    outline: "none",
-    transition: "border-color 0.3s ease",
+    width: '100%',
+    padding: '10px',
+    border: '1px solid #ddd',
+    borderRadius: '5px',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'border-color 0.3s ease',
   },
   modalActions: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "10px",
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '10px',
   },
   saveButton: {
-    padding: "10px 15px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    transition: "background-color 0.3s ease",
+    padding: '10px 15px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s ease',
   },
   cancelButton: {
-    padding: "10px 15px",
-    backgroundColor: "#ddd",
-    color: "#333",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    transition: "background-color 0.3s ease",
+    padding: '10px 15px',
+    backgroundColor: '#ddd',
+    color: '#333',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s ease',
   },
 };

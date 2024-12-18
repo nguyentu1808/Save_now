@@ -7,15 +7,15 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 const Layout = ({ children }) => {
-    return (
-        <React.Fragment>
-            <div className={cx('layout')}>
-                <Header />
-                    <div className={cx('content')}>{children}</div>
-                <Footer />
-            </div>
-        </React.Fragment>
-    );
+  return (
+    <React.Fragment>
+      <div className={cx('layout')}>
+        <Header />
+        <div className={cx('content')}>{children}</div>
+        <Footer />
+      </div>
+    </React.Fragment>
+  );
 };
 
 export default Layout;

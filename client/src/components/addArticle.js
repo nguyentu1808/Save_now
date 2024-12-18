@@ -1,31 +1,33 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const AddArticle = ({ onAdd, requestId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newArticle, setNewArticle] = useState({ name: "", url: "" });
+  const [newArticle, setNewArticle] = useState({ name: '', url: '' });
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => {
-    setNewArticle({ name: "", url: "" });
+    setNewArticle({ name: '', url: '' });
     setIsModalOpen(false);
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setNewArticle((prev) => ({ ...prev, [name]: value }));
+    setNewArticle(prev => ({ ...prev, [name]: value }));
   };
 
   const handleAdd = async () => {
     const { name, url } = newArticle;
 
-    if (!name || !url ) {
+    if (!name || !url) {
       alert('Please fill in all fields');
       return;
     }
 
     // onAdd(newArticle);
     try {
-      const response = await fetch(`http://localhost:5001/adRequest/addarticle/${requestId}`, {
+      const response = await fetch(`${apiUrl}/adRequest/addarticle/${requestId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming you're using JWT token for authentication
@@ -48,7 +50,7 @@ const AddArticle = ({ onAdd, requestId }) => {
       alert('Something went wrong while adding the article');
     }
     // handleCloseModal();
-  }
+  };
 
   return (
     <>
@@ -99,74 +101,74 @@ const AddArticle = ({ onAdd, requestId }) => {
 
 const styles = {
   addButton: {
-    position: "fixed",
-    bottom: "150px",
-    right: "100px",
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    position: 'fixed',
+    bottom: '150px',
+    right: '100px',
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
   modalOverlay: {
-    position: "fixed",
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 1000,
   },
   modalContent: {
-    backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "8px",
-    width: "400px",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
+    width: '400px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   },
   modalname: {
-    marginBottom: "20px",
-    fontSize: "20px",
-    textAlign: "center",
+    marginBottom: '20px',
+    fontSize: '20px',
+    textAlign: 'center',
   },
   formGroup: {
-    marginBottom: "15px",
+    marginBottom: '15px',
   },
   label: {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "bold",
+    display: 'block',
+    marginBottom: '5px',
+    fontWeight: 'bold',
   },
   input: {
-    width: "100%",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    width: '100%',
+    padding: '8px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
   },
   buttonGroup: {
-    display: "flex",
-    justifyContent: "space-between",
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   saveButton: {
-    padding: "10px 20px",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
   cancelButton: {
-    padding: "10px 20px",
-    backgroundColor: "#6c757d",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
+    padding: '10px 20px',
+    backgroundColor: '#6c757d',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
 };
 

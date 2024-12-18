@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const AddRequest = ({ onClose, onAddRequest }) => {
   const [formData, setFormData] = useState({
     name : '',
@@ -20,7 +22,7 @@ const AddRequest = ({ onClose, onAddRequest }) => {
     e.preventDefault();
   
     try {
-      const response = await fetch('http://localhost:5001/adRequest/addRequest', {
+      const response = await fetch(`${apiUrl}/adRequest/addRequest`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

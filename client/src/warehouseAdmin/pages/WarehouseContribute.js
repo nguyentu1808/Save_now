@@ -1,11 +1,11 @@
-import Layout from "../layout";
+import Layout from '../layout';
 
 export default function AdminWContribute() {
   return (
     <Layout>
       <main style={styles.main}>
         <div style={styles.logoContainer}>
-          <img src="/assets/logo.png" alt="Logo" style={styles.logo} /> 
+          <img src="/assets/logo.png" alt="Logo" style={styles.logo} />
         </div>
         <h2 style={styles.tagline}>Cùng chung tay xây dựng xã hội nhân ái và bền vững</h2>
         <div style={styles.content}>
@@ -20,10 +20,13 @@ export default function AdminWContribute() {
 
           <div style={styles.rightColumn}>
             <h2 style={styles.rightColumnHeading}>Đóng góp giúp các khu vực cứu trợ</h2>
-            <p style={styles.rightColumnText}>Hãy cùng chúng tôi chung tay giúp đỡ. 100% số tiền bạn đóng góp sẽ được chuyển đến trực tiếp khu vực gặp khó khăn, không qua bất kỳ khâu trung gian nào.
-              <br/>
-              <br/>
-              Sự sẻ chia của bạn là động lực lớn nhất cho chúng tôi. Chúng tôi sẽ thường xuyên cập nhật thông tin về quá trình sử dụng quỹ để bạn luôn cảm thấy yên tâm và tin tưởng.
+            <p style={styles.rightColumnText}>
+              Hãy cùng chúng tôi chung tay giúp đỡ. 100% số tiền bạn đóng góp sẽ được chuyển đến
+              trực tiếp khu vực gặp khó khăn, không qua bất kỳ khâu trung gian nào.
+              <br />
+              <br />
+              Sự sẻ chia của bạn là động lực lớn nhất cho chúng tôi. Chúng tôi sẽ thường xuyên cập
+              nhật thông tin về quá trình sử dụng quỹ để bạn luôn cảm thấy yên tâm và tin tưởng.
             </p>
           </div>
         </div>

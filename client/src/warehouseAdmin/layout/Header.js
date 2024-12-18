@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate(); // Khởi tạo navigate từ react-router-dom
 
-  const handleNavigate = (path) => {
+  const handleNavigate = path => {
     navigate(path); // Điều hướng đến đường dẫn tương ứng
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -63,7 +63,7 @@ const Header = () => {
 
 const styles = {
   header: {
-    position: 'fixed', 
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
@@ -72,7 +72,7 @@ const styles = {
     alignItems: 'center',
     padding: '15px 40px',
     backgroundColor: '#E4E3E3',
-    zIndex: 1000, 
+    zIndex: 1000,
   },
   logo: {
     flex: 1,

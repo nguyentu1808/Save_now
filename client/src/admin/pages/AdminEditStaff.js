@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function EditUserModal({ user, onClose, onSave }) {
   const [editedUser, setEditedUser] = useState({ ...user });
 
@@ -12,7 +14,7 @@ export default function EditUserModal({ user, onClose, onSave }) {
     try {
       // Gửi yêu cầu cập nhật thông tin nhân viên tới API
       const response = await fetch(
-        `http://localhost:5001/admin/employee/${user.id}`,
+        `${apiUrl}/admin/employee/${user.id}`,
         {
           method: "PUT",
           headers: {

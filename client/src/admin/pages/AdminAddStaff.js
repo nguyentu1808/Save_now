@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 export default function AddUserModal({ onClose, onAdd, warehouse_id }) {
   const [newUser, setNewUser] = useState({
     user_name: "",
@@ -23,7 +25,7 @@ export default function AddUserModal({ onClose, onAdd, warehouse_id }) {
     }
 
     try {
-      const response = await fetch('http://localhost:5001/admin/warehouses/employees', {
+      const response = await fetch(`${apiUrl}/admin/warehouses/employees`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming you're using JWT token for authentication
